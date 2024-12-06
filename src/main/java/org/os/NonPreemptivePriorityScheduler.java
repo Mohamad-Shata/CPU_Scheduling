@@ -25,7 +25,7 @@ public class NonPreemptivePriorityScheduler {
             currentTime += process.burstTime;
             currentTime += contextSwitchTime;
 
-            System.out.printf("%d\t%d\t%d\t\t%d\t%d\n", process.id, process.burstTime, process.priority, process.waitingTime, process.turnaroundTime);
+            System.out.printf("%d\t  %d\t\t    %d\t\t  %d\t\t\t%d\n", process.id, process.burstTime, process.priority, process.waitingTime, process.turnaroundTime);
         }
 
         double totalWaitingTime = processes.stream().mapToInt(p -> p.waitingTime).sum();
