@@ -5,19 +5,18 @@ import java.util.*;
 public class NonPreemptivePriorityScheduler {
 
     public void schedule(List<Process> processes) {
-        // Sort by priority (lower value = higher priority)
         processes.sort(Comparator.comparingInt(p -> p.priority));
 
         int currentTime = 0;
         int contextSwitchTime = 1;
 
         System.out.println("\nNon-Preemptive Priority Scheduling Results:");
-        System.out.println("ID\tBurst\tPriority\tWaiting\tTurnaround");
+        System.out.printf("%-4s %-6s %-8s %-8s %-10s%n", "ID", "Burst", "Priority", "Waiting", "Turnaround");
 
         for (Process process : processes) {
             process.waitingTime = currentTime - process.arrivalTime;
             if (process.waitingTime < 0) {
-                process.waitingTime = 0; // Adjust for idle time
+                process.waitingTime = 0;
                 currentTime = process.arrivalTime;
             }
 
@@ -25,12 +24,20 @@ public class NonPreemptivePriorityScheduler {
             currentTime += process.burstTime;
             currentTime += contextSwitchTime;
 
-            System.out.printf("%d\t  %d\t\t    %d\t\t  %d\t\t\t%d\n", process.id, process.burstTime, process.priority, process.waitingTime, process.turnaroundTime);
+            System.out.printf(
+                    "%-4d %-6d %-8d %-8d %-10d%n",
+                    process.id, process.burstTime, process.priority, process.waitingTime, process.turnaroundTime
+            );
         }
 
-        double totalWaitingTime = processes.stream().mapToInt(p -> p.waitingTime).sum();
-        double averageWaitingTime = totalWaitingTime / processes.size();
+        // Calculate averages
+        int totalWaitingTime = processes.stream().mapToInt(p -> p.waitingTime).sum();
+        int totalTurnaroundTime = processes.stream().mapToInt(p -> p.turnaroundTime).sum();
+        double averageWaitingTime = (double) totalWaitingTime / processes.size();
+        double averageTurnaroundTime = (double) totalTurnaroundTime / processes.size();
 
+        // Print averages
         System.out.printf("\nAverage Waiting Time: %.2f units\n", averageWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f units\n", averageTurnaroundTime);
     }
 }
