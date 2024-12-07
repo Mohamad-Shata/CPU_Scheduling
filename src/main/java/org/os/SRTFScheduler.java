@@ -50,11 +50,23 @@ public class SRTFScheduler {
             }
         }
 
-        // Print results
         System.out.println("\nSRTF Scheduling Results:");
-        System.out.println("ID\tBurst\tArrival\tWaiting\tTurnaround");
+        System.out.printf("%-4s %-6s %-8s %-8s %-10s%n", "ID", "Burst", "Arrival", "Waiting", "Turnaround");
+
         for (Process p : processes) {
-            System.out.printf("%d\t%d\t%d\t%d\t%d\n", p.id, p.burstTime, p.arrivalTime, p.waitingTime, p.turnaroundTime);
+            System.out.printf(
+                    "%-4d %-6d %-8d %-8d %-10d%n",
+                    p.id, p.burstTime, p.arrivalTime, p.waitingTime, p.turnaroundTime
+            );
         }
+
+        int totalWaitingTime = processes.stream().mapToInt(p -> p.waitingTime).sum();
+        int totalTurnaroundTime = processes.stream().mapToInt(p -> p.turnaroundTime).sum();
+        double avgWaitingTime = (double) totalWaitingTime / processes.size();
+        double avgTurnaroundTime = (double) totalTurnaroundTime / processes.size();
+
+        System.out.printf("\nAverage Waiting Time: %.2f units\n", avgWaitingTime);
+        System.out.printf("Average Turnaround Time: %.2f units\n", avgTurnaroundTime);
+
     }
 }
