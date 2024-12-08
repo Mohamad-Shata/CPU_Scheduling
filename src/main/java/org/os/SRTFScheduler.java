@@ -9,7 +9,6 @@ public class SRTFScheduler {
         int completed = 0;
         int n = processes.size();
 
-        // PriorityQueue to sort by remaining time, breaking ties by arrival time
         PriorityQueue<Process> pq = new PriorityQueue<>((p1, p2) -> {
             if (p1.remainingTime == p2.remainingTime) {
                 return Integer.compare(p1.arrivalTime, p2.arrivalTime);
@@ -17,7 +16,6 @@ public class SRTFScheduler {
             return Integer.compare(p1.remainingTime, p2.remainingTime);
         });
 
-        // Sort processes by arrival time
         processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
 
         while (completed < n) {
@@ -33,14 +31,12 @@ public class SRTFScheduler {
                 continue;
             }
 
-            // Select the process with the shortest remaining time
             Process current = pq.poll();
 
-            // Simulate execution for 1 time unit
             time++;
             current.remainingTime--;
 
-            // If the process is complete
+
             if (current.remainingTime == 0) {
                 completed++;
                 current.turnaroundTime = time - current.arrivalTime;
