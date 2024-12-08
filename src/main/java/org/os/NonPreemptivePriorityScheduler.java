@@ -5,28 +5,51 @@ import java.util.*;
 public class NonPreemptivePriorityScheduler {
 
     public void schedule(List<Process> processes) {
-        processes.sort(Comparator.comparingInt(p -> p.priority));
-
         int currentTime = 0;
         int contextSwitchTime = 1;
+        List<Process> readyQueue = new ArrayList<>();
+        List<Process> remainingProcesses = new ArrayList<>(processes);
 
         System.out.println("\nNon-Preemptive Priority Scheduling Results:");
         System.out.printf("%-4s %-6s %-8s %-8s %-10s%n", "ID", "Burst", "Priority", "Waiting", "Turnaround");
 
-        for (Process process : processes) {
-            process.waitingTime = currentTime - process.arrivalTime;
-            if (process.waitingTime < 0) {
-                process.waitingTime = 0;
-                currentTime = process.arrivalTime;
+        while (!remainingProcesses.isEmpty() || !readyQueue.isEmpty()) {
+            // Add processes that have arrived to the ready queue
+            Iterator<Process> iterator = remainingProcesses.iterator();
+            while (iterator.hasNext()) {
+                Process process = iterator.next();
+                if (process.arrivalTime <= currentTime) {
+                    readyQueue.add(process);
+                    iterator.remove();
+                }
             }
 
-            process.turnaroundTime = process.waitingTime + process.burstTime;
-            currentTime += process.burstTime;
+            // If no process is ready, advance time
+            if (readyQueue.isEmpty()) {
+                currentTime++;
+                continue;
+            }
+
+            // Choose the highest priority process from the ready queue
+            Process currentProcess = readyQueue.stream()
+                    .min(Comparator.comparingInt(p -> p.priority))
+                    .orElseThrow();
+
+            readyQueue.remove(currentProcess);
+
+            // Calculate waiting and turnaround times
+            currentProcess.waitingTime = currentTime - currentProcess.arrivalTime;
+            currentProcess.turnaroundTime = currentProcess.waitingTime + currentProcess.burstTime;
+
+            // Update the current time
+            currentTime += currentProcess.burstTime;
             currentTime += contextSwitchTime;
 
+            // Print process details
             System.out.printf(
-                    "%-4d %-6d %-8d %-8d %-10d%n",
-                    process.id, process.burstTime, process.priority, process.waitingTime, process.turnaroundTime
+                    "%-4d   %-6d  %-8d %-8d  %-10d%n",
+                    currentProcess.id, currentProcess.burstTime, currentProcess.priority,
+                    currentProcess.waitingTime, currentProcess.turnaroundTime
             );
         }
 
@@ -40,4 +63,5 @@ public class NonPreemptivePriorityScheduler {
         System.out.printf("\nAverage Waiting Time: %.2f units\n", averageWaitingTime);
         System.out.printf("Average Turnaround Time: %.2f units\n", averageTurnaroundTime);
     }
+
 }
