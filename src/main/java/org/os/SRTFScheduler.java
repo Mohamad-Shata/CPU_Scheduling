@@ -19,7 +19,6 @@ public class SRTFScheduler {
         processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
 
         while (completed < n) {
-            // Add all processes that have arrived by the current time to the queue
             for (Process p : processes) {
                 if (p.arrivalTime <= time && !pq.contains(p) && p.remainingTime > 0) {
                     pq.add(p);
