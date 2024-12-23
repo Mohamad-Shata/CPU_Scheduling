@@ -50,8 +50,8 @@ public class SRTFScheduler {
 
         for (Process p : processes) {
             System.out.printf(
-                    "%-4d %-6d %-8d %-8d %-10d%n",
-                    p.id, p.burstTime, p.arrivalTime, p.waitingTime, p.turnaroundTime
+                    "%-4s %-6d %-8d %-8d %-10d%n",
+                    p.name, p.burstTime, p.arrivalTime, p.waitingTime, p.turnaroundTime
             );
         }
 

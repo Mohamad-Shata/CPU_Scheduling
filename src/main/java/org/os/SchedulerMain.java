@@ -12,12 +12,14 @@ public class SchedulerMain {
         List<Process> processes = new ArrayList<>();
 
         for (int i = 0; i < numProcesses; i++) {
-            System.out.print("Enter burst time, priority, arrival time, and quantum for Process " + (i + 1) + ": ");
+            System.out.print("Enter burst time,  arrival time, priority, and quantum for Process " + (i + 1) + ": ");
             int burstTime = scanner.nextInt();
-            int priority = scanner.nextInt();
             int arrivalTime = scanner.nextInt();
+            int priority = scanner.nextInt();
             int quantum = scanner.nextInt();
-            Process process = new Process(i + 1, burstTime, priority, arrivalTime);
+            System.out.print("enter process name: ");
+            String name = scanner.next();
+            Process process = new Process(name, burstTime, arrivalTime, priority , quantum);
             process.quantum = quantum;
             processes.add(process);
         }
@@ -26,6 +28,7 @@ public class SchedulerMain {
         System.out.println("1. Shortest Remaining Time First (SRTF)");
         System.out.println("2. Non-Preemptive Priority");
         System.out.println("3. FCAI Scheduling");
+        System.out.println("4. Non-Preemptive SJF Scheduling");
         System.out.print("Enter your choice (1, 2, or 3): ");
         int choice = scanner.nextInt();
 
@@ -44,9 +47,16 @@ public class SchedulerMain {
 
             case 3:
                 System.out.println("\nExecuting FCAI Scheduler:");
-                FCAI_Scheduler fcaiScheduler = new FCAI_Scheduler();
-                fcaiScheduler.schedule(new ArrayList<>(processes));
+                fcaiScheduling fcaiScheduler = new fcaiScheduling(new ArrayList<>(processes));
+                fcaiScheduler.start();
                 break;
+
+            case 4:
+                System.out.println("\nExecuting SJF Scheduler:");
+                NonPremptiveSJF sjf = new NonPremptiveSJF() ;
+                sjf.schedule(new ArrayList<>(processes));
+                break;
+
 
             default:
                 System.out.println("Invalid choice! Please enter 1, 2, or 3.");

@@ -47,8 +47,8 @@ public class NonPreemptivePriorityScheduler {
 
             // Print process details
             System.out.printf(
-                    "%-4d   %-6d  %-8d %-8d  %-10d%n",
-                    currentProcess.id, currentProcess.burstTime, currentProcess.priority,
+                    "%-4s   %-6d  %-8d %-8d  %-10d%n",
+                    currentProcess.name, currentProcess.burstTime, currentProcess.priority,
                     currentProcess.waitingTime, currentProcess.turnaroundTime
             );
         }
