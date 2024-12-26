@@ -20,7 +20,6 @@ public class SchedulerMain {
             System.out.print("enter process name: ");
             String name = scanner.next();
             Process process = new Process(name, burstTime, arrivalTime, priority , quantum);
-            process.quantum = quantum;
             processes.add(process);
         }
 
