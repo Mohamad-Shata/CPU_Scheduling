@@ -5,6 +5,7 @@ public class FCAI_Scheduler
 {
     public void schedule(List<Process> processes)
     {
+        //Track the number of processes completed
         int completed = 0;
         int n = processes.size();
         final int lastArrivalTime = processes.stream().mapToInt(p -> p.arrivalTime).max().orElse(1);
@@ -12,7 +13,9 @@ public class FCAI_Scheduler
         final double V1 = lastArrivalTime / 10.0;
         final double V2 = maxBurstTime / 10.0;
 
+        //Create a map to store the quantum history of each process.
         Map<Process, List<Integer>> quantumHistory = new HashMap<>();
+        //create an empty ArrayList to store Processes execution order
         List<String> executionLog = new ArrayList<>();
 
         for (Process process : processes)
@@ -21,35 +24,27 @@ public class FCAI_Scheduler
 
         }
 
+        //Sorts processes by arrival time to facilitate scheduling.
+        processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
+
         PriorityQueue<Process> pq = new PriorityQueue<>((p1, p2) -> {
             double fcaiFactor1 = (10 - p1.priority) + Math.ceil(p1.arrivalTime / V1) + Math.ceil(p1.remainingTime / V2);
             double fcaiFactor2 = (10 - p2.priority) + Math.ceil(p2.arrivalTime / V1) + Math.ceil(p2.remainingTime / V2);
             return Double.compare(fcaiFactor1, fcaiFactor2);
         });
 
+        //count the time of the run
+        int time = processes.stream().mapToInt(p -> p.arrivalTime).min().orElse(0);
 
-        processes.sort(Comparator.comparingInt(p -> p.arrivalTime));
-
-        int time = 0;
         while (completed < n)
         {
-            final int currentTime = time;
+            int currentTime = time;
 
             for (Process p : processes)
             {
                 if (p.arrivalTime <= currentTime && !pq.contains(p) && p.remainingTime > 0) {
                     pq.add(p);
                 }
-            }
-
-            if (pq.isEmpty())
-            {
-                time = processes.stream()
-                        .filter(p -> p.remainingTime > 0 && p.arrivalTime > currentTime)
-                        .mapToInt(p -> p.arrivalTime)
-                        .min()
-                        .orElse(currentTime);
-                continue;
             }
 
             Process current = pq.poll();
@@ -67,13 +62,28 @@ public class FCAI_Scheduler
                 current.turnaroundTime = time - current.arrivalTime;
                 current.waitingTime = current.turnaroundTime - current.burstTime;
                 executionLog.add(current.name + " completes execution.");
-            } else {
-                int remainingQuantum = quantum - executeTime;
-                int updatedQuantum = quantum + Math.max(0, remainingQuantum);
-                current.quantum = updatedQuantum;
-                quantumHistory.get(current).add(updatedQuantum);
-                pq.add(current);
-                executionLog.add(current.name + " is preempted with " + current.remainingTime + " units remaining.");
+            }
+            else
+            {
+                if (quantum-executeTime==0)
+                {
+                    int updatedQuantum = quantum + 2;
+                    current.quantum = updatedQuantum;
+                    quantumHistory.get(current).add(updatedQuantum);
+                    pq.add(current);
+                    executionLog.add(current.name + " is preempted with " + current.remainingTime + " units remaining.");
+                }
+
+                else
+                {
+                    int unusedQuantum = quantum - executeTime;
+                    int updatedQuantum = quantum + unusedQuantum;
+                    current.quantum = updatedQuantum;
+                    quantumHistory.get(current).add(updatedQuantum);
+                    pq.add(current);
+                    executionLog.add(current.name + " is preempted with " + current.remainingTime + " units remaining.");
+                }
+
             }
         }
 
