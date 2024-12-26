@@ -29,7 +29,7 @@ public class SchedulerMain {
         System.out.println("2. Non-Preemptive Priority");
         System.out.println("3. FCAI Scheduling");
         System.out.println("4. Non-Preemptive SJF Scheduling");
-        System.out.print("Enter your choice (1, 2, or 3): ");
+        System.out.print("Enter your choice (1, 2, 3 or 4): ");
         int choice = scanner.nextInt();
 
         switch (choice) {
@@ -47,8 +47,8 @@ public class SchedulerMain {
 
             case 3:
                 System.out.println("\nExecuting FCAI Scheduler:");
-                fcaiScheduling fcaiScheduler = new fcaiScheduling(new ArrayList<>(processes));
-                fcaiScheduler.start();
+                FCAI_Scheduler fcaiScheduler = new FCAI_Scheduler();
+                fcaiScheduler.schedule(new ArrayList<>(processes));
                 break;
 
             case 4:
@@ -59,7 +59,7 @@ public class SchedulerMain {
 
 
             default:
-                System.out.println("Invalid choice! Please enter 1, 2, or 3.");
+                System.out.println("Invalid choice! Please enter 1, 2, 3 or 4.");
         }
 
         scanner.close();
