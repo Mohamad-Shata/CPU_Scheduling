@@ -2,17 +2,14 @@ package org.os;
 
 class Process {
     public String name;
-
-    public int starttime;
-    public int endtime;
     public int burstTime;
     public int arrivalTime;
     public int priority;
     public int remainingTime;
-    public int fcaiFactor;
     public int quantum;
     public int waitingTime;
     public int turnaroundTime;
+    public int completionTime;
 
     public Process(String name, int burstTime, int arrivalTime, int priority, int  quantum) {
         this.name = name;
